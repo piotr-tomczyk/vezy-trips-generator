@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "vue": "^3.4.21"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.25",
+    "@crxjs/vite-plugin": "2.0.0-beta.23",
+    "@types/chrome": "^0.0.262",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.5",
+    "vue-tsc": "^2.0.5"
+  },
+  "name": "trip-extension",
+  "private": true,
+  "scripts": {
+    "build": "vue-tsc && vite build",
+    "dev": "vite",
+    "preview": "vite preview"
+  },
+  "version": "1.0.0"
+}
