@@ -209,12 +209,6 @@
         selectedDestination.value = null;
     });
 
-    watch(selectedCallsign, () => {
-        selectedDeparture.value = null;
-        selectedDestination.value = null;
-        selectedAircraft.value = null;
-    });
-
     onMounted(() => {
         const lastVisitedCallsign = localStorage.getItem('lastVisited');
         if (lastVisitedCallsign) {
