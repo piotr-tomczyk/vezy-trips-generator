@@ -102,6 +102,11 @@
                         {{ allRoutes?.find((route) => route.icao === leg.start)?.destinations?.find((destination) => destination.icao === leg.end)?.time }}
                     </td>
                 </tr>
+                <tr>
+                    <td colspan="4">
+                        Total trip time: <span style="font-weight: bold"> {{ totalTripTime }} </span> (includes {{ totalTurnaroundTime }} of turnaroud)
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -154,6 +159,37 @@
 
         return routesFilteredByAircraft;
     });
+
+    const totalTripTime = computed<string>(() => {
+        if (foundTrip.value) {
+            const tripTimeInSeconds = foundTrip.value.legs.reduce((currentValue, leg) => {
+                const legTime = allRoutes.value?.find((route) => route.icao === leg.start)?.destinations?.find((destination) => destination.icao === leg.end)?.time || '';
+                const [hours, minutes, seconds] = legTime.split(':').map(Number);
+                return hours * 3600 + minutes * 60 + seconds + currentValue;
+            }, 0);
+
+            const tripAndTournaroundTime = tripTimeInSeconds + totalTurnaroundTimeInSeconds.value;
+
+            const hours = Math.floor(tripAndTournaroundTime / 3600);
+            const minutes = Math.floor((tripAndTournaroundTime % 3600) / 60);
+            const seconds = tripAndTournaroundTime % 60;
+
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        return '';
+    });
+
+    const totalTurnaroundTimeInSeconds = computed<number>(() => foundTrip.value ? (foundTrip.value.legs.length - 1) * 35 * 60 : 0);
+
+    const totalTurnaroundTime = computed(() => {
+        if (foundTrip.value) {
+            const hours = Math.floor(totalTurnaroundTimeInSeconds.value / 3600);
+            const minutes = Math.floor((totalTurnaroundTimeInSeconds.value % 3600) / 60);
+            const seconds = totalTurnaroundTimeInSeconds.value % 60;
+
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+    })
 
     //@ts-ignore
     const availableCallsigns = computed(() => FilterUtils.getAllCallsigns(allRoutes.value));
@@ -230,11 +266,6 @@
     });
 
     function calculateLegs() {
-        console.log({
-            selectedDeparture: selectedDeparture.value,
-            selectedDestination: selectedDestination.value,
-            selectedAircraft: selectedAircraft.value
-        });
         if (isGeneratingRoute.value) {
             return;
         }
