@@ -103,7 +103,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4">
+                    <td v-if="!totalTripTime?.includes('NaN') && !totalTurnaroundTime?.includes('NaN')" colspan="4">
                         Total trip time: <span style="font-weight: bold"> {{ totalTripTime }} </span> (includes {{ totalTurnaroundTime }} of turnaroud)
                     </td>
                 </tr>
